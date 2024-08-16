@@ -123,7 +123,7 @@ def parse_expression(expression):
 if __name__ == "__main__":
     while True:
         try:
-            s = input('simple_lang > ')
+            s = input('GoldCotiara > ')
             if s.strip() == 'exit;':
                 print("Exiting the program")
                 break
