@@ -12,7 +12,9 @@ tokens = (
     'SEMI',
     'LPAREN',
     'RPAREN',
-    'EXIT'
+    'EXIT',
+    'ECHO',
+    'STRING'
 )
 
 # Определение токенов
@@ -25,6 +27,8 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_NUMBER = r'\d+'
 t_EXIT = r'exit'
+t_ECHO = r'echo'
+t_STRING = r'"[^"]*"|\'[^\']\''  # added STRING token
 
 # Игнорируем пробелы
 t_ignore = ' \t'
@@ -45,7 +49,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Грамматика и парсер
-reserved = {'var', 'exit'}
+reserved = {'var', 'exit', 'echo'}
 
 def p_statement_assign(p):
     'statement : VAR ID EQUALS expression SEMI'
@@ -61,6 +65,10 @@ def p_statement_expr(p):
 def p_statement_exit(p):
     'statement : EXIT SEMI'
     raise SystemExit("Exiting the program")
+
+def p_statement_echo(p):
+    'statement : ECHO string SEMI'
+    print(p[2][1:-1])  # remove quotes
 
 def p_expression_binop(p):
     '''expression : expression PLUS term
@@ -89,6 +97,10 @@ def p_expression_id(p):
 def p_term(p):
     'term : NUMBER'
     p[0] = int(p[1])
+
+def p_string(p):
+    'string : STRING'
+    p[0] = p[1]
 
 def p_error(p):
     if p:
